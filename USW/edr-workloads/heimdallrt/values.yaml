@@ -1,0 +1,60 @@
+heimdallrt:
+  env: edrusw
+
+  networkPolicy:
+    enable: true
+
+  irsa:
+    iamRoleArn: "arn:aws:iam::983703175993:role/edruswheimdallrt-s3-rw-role"
+
+  postHook:
+    image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/etcd:curl
+
+  actorMetrics:
+    enableActorMetrics: true
+    doomsdayWildcard: "off"
+    startPrometheusHttpServer: "no"
+    enablePrometheusReporter: false
+    enablePushGatewayReporter: true
+
+  infoseekers:
+    elasticHost: "database-esearch-0.0.0.1.service.skydns.local"
+
+  vpc:
+    dnsNamespace: 172.20.0.10
+    vpcPodsCidr: 10.10.0.0/16
+    vpcNodesCidr: 10.1.0.0/16
+
+
+  heimdallrt:
+    deployment:
+      awsDefaultRegion: "us-west-2"
+      image: 
+        repo: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/heimdallrt/heimdallrt
+        pullPolicy: IfNotPresent
+
+      resources:
+        limits:
+          cpu: "14"
+          memory: 24Gi
+        requests:
+          cpu: "14"
+          memory: 24Gi
+          
+      useAcQuery: "True"
+      asgMaxSize: 6
+      rtJavaOpts: "-J-Xms8g@space@-J-Xmx8g"
+      runtimefsMount: "true"         # to be kept string   
+      
+
+      gti:
+        urlHost: 'mvedr.rest.gti.trellix.com'
+        fileHost: 'mvedr.rest.gti.trellix.com'
+        id: 'is-cairo-prod'
+        secrets:
+          id: "gti-key-secret"
+          version: "96056915-5e04-461d-99ee-e9affed3eb07"
+          key: "gtiKey"
+
+    kong:
+      cloudLinkPassword: mc4fee

@@ -1,0 +1,67 @@
+api-gateway:
+  clusterRegion: us-west-2
+  
+  healthcheck1:
+    image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/etcd:curl
+
+  enableNetworkPolicy: true
+  kong:
+    hpa:
+      min: 4
+      max: 20
+      metricName: kong_http_requests_total_per_sec    #alias as defined in prometheus-adapter configmap. This can be skipped. Also set in default values.yaml
+      value: 2000                                #value represents 2000RPS per pod as HPA limit. Update if required
+
+    albCertificateArn: 'arn:aws:acm:us-west-2:983703175993:certificate/7e8bca6c-de7e-4bb9-b413-43d4526e82e5,arn:aws:acm:us-west-2:983703175993:certificate/8e234d7b-3ed2-4211-87d4-a59cff7beb0f'
+    albSecurityPolicy: 'ELBSecurityPolicy-FS-1-2-Res-2019-08'
+    enableHttpsOnKong: false
+      
+    enableWaf: true
+    webAclId: 'a3668a5f-e618-423a-89ea-da0c452e334d'
+    memCacheSize: 4096m
+
+    ingressController:
+      image:
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/api-gateway/kubernetes-ingress-controller
+
+      resources:
+        limits:
+          cpu: 100m
+          memory: 400Mi
+        requests:
+          cpu: 50m
+          memory: 400Mi
+      
+    proxy:
+      image:
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/api-gateway/kong
+
+      resources:
+        limits:
+          cpu: "4"
+          memory: 8Gi
+        requests:
+          cpu: "4"
+          memory: 8Gi
+
+  healthcheck:
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/api-gateway/healthcheck
+    resources:
+      limits:
+        cpu: 50m
+        memory: 100Mi
+      requests:
+        cpu: 50m
+        memory: 100Mi
+
+  legacyapi:
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/api-gateway/legacyapiserver
+    resources:
+      limits:
+        cpu: 200m
+        memory: 600Mi
+      requests:
+        cpu: 200m
+        memory: 600Mi

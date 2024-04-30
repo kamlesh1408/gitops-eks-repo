@@ -1,0 +1,117 @@
+localintelligence:
+  env: edrusw
+  vpcDnsNamespace: 172.20.0.10
+  enableNetworkPolicies: true
+
+  deployment:
+    celery:
+      clusterSize: 1
+
+      image:
+        repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/localintelligence/celery"
+
+      maxConcurrency: 20
+      minConcurrency: 5
+
+      resources:
+        limits:
+          cpu: 2
+          memory: 1Gi
+        requests:
+          cpu: 1
+          memory: 1Gi
+
+    api:
+      clusterSize: 2
+
+      livenessProbe:
+        initialDelaySeconds: 30
+
+      resources:
+        limits:
+          cpu: 8
+          memory: 6Gi
+        requests:
+          cpu: 6
+          memory: 6Gi
+
+      apiURL: "https://api.soc.trellix.com"
+
+      image:
+        repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/localintelligence/api"
+
+      uwsgi:
+        uwsgiCheaperMin: 2
+        uwsgiCheaperInitial: 2
+        uwsgiWorkers: 20
+        uwsgiCheaperStep: 2
+        uwsgiBufferSize: 10768
+        apiCheaperRssLimitSoft: 2684354560
+
+    esearch:
+      clusterSize: 9
+
+      resources:
+        limits:
+          cpu: 3
+          memory: 8Gi
+        requests:
+          cpu: 3
+          memory: 8Gi
+
+
+      esMinimumMasterNodes: 2
+      javaOption: "-Xms6g -Xmx6g"
+      esBackupActive: "True"
+  
+      image:
+        repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/localintelligence/esearch"
+
+      volumeSize: 1000Gi
+      volumeType: "standard-encrypted-zones"
+
+    rabbitmq:
+      clusterSize: 1
+      volumeSize: 1Gi
+      storageClass: standard-encrypted-zones
+
+      resources:
+        limits:
+          cpu: 2
+          memory: 2Gi
+        requests:
+          cpu: 1
+          memory: 2Gi
+
+      image:
+        repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/localintelligence/rabbitmq"
+
+  kong:
+    cloudLinkPassword: Mc4fee2020
+    corsOrigin: ^https://ui.*\.soc.*\.trellix\.com
+
+  aws:
+    region: "us-west-2"
+    nodesCidr: "10.1.0.0/16"
+  secret:
+    secretId: "edrusw-localintelligence-aws-secret"
+    secretVersion: "5e1d73e8-c091-48e2-baa3-4a6f3988b7c6"
+
+  logrotate:
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/localintelligence/logrotate
+      pullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 10m
+        memory: 20Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+  envConfig:
+    image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/etcd:curl # This image is available in all environments.
+    statisticsEnable: false
+    statisticsFrequency: 10
+    statisticsMaxErrors: 10
+    statisticsOnErrorWaitTime: 300
+    logLevel: ERROR

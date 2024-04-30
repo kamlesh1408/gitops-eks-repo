@@ -1,0 +1,10 @@
+apiVersion: v2
+name: caseManagement
+description: A Helm chart for deploying case-management 
+type: application
+version: 1.0.0
+
+dependencies:
+- name: case-management
+  version: 1.0.51
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

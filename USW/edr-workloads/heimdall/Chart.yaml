@@ -1,0 +1,10 @@
+apiVersion: v2
+name: heimdall
+description: A Helm chart for deploying heimdall
+type: application
+version: 1.0.0
+
+dependencies:
+- name: heimdall
+  version: 1.0.134
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

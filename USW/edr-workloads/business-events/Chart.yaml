@@ -1,0 +1,10 @@
+apiVersion: v2
+name: business-events
+description: A Helm chart for deploying business-events
+type: application
+version: 1.0.0
+
+dependencies:
+  - name: business-events
+    version: 1.0.84
+    repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

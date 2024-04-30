@@ -1,0 +1,155 @@
+heimdall:
+  environment: edrusw
+  enableNetworkPolicy: true
+  enableHeimdallws: "yes"
+  prometheusIoPort: 9999
+
+  secret:
+    rds:
+      secretUserKey: MYSQL_USER
+      secretPwdKey: MYSQL_PASS
+      secretRdsPwdKey: pass
+      secretId: "edruswheimdall-rds-secret"
+      secretVersion: "0b570499-baef-4804-8780-45d54a332e86"
+    arango:
+      secretUserKey: ARANGO_USERNAME
+      secretPwdKey: ARANGO_PASSWORD
+      secretId: "edruswheimdall-arango-secret"
+      secretVersion: "f90b0eae-6163-4909-a59d-c7fc5139ccf0"
+    neo4j:
+      secretUserKey: NEO4J_USERNAME
+      secretPwdKey: NEO4J_PASSWORD
+      secretNeo4jUserKey: NEO4J_USER_NAME
+      secretNeo4jPwdKey: NEO4J_USER_PASS
+      secretId: "edruswheimdall-neo4j-secret"
+      secretVersion: "b92e6b91-5e77-48ca-b78e-edda0a988150"
+
+  kongPlugins:
+    kongRateLimit: 200
+    corsOrigin: '^https://ui.*\.soc.*\.trellix\.com'
+    cloudlink:
+      password: mc4fee
+
+  featureFlagConfigMap:
+    ldEnvironment: edrusw
+    ldApiKey: eNpLLMjUNU4xMjNISTTWTUpKS9Q1SbI01bVMMTfXNTA2TrM0MUgzMDIwBQDpVwqj
+    ldLocalRedisStore: none
+    ldLocalRedisSslEnabled: false
+    ldLocalRedisPassword: none
+    ldSendUsageEvents: false
+    ldSamplingInterval: 0
+    ldLocalFlagServiceLocation: none
+
+  vpc:
+    dnsNamespace: 172.20.0.10
+    nodesCidr: "0.0.0.0/0"
+
+  deployment:
+    includeNginx: false
+    mockEnabled: false
+    apiGwEndpoint: https://api.soc.trellix.com
+
+    arango:
+      expansionMaxConnections: 100
+      replicas: 3
+      contentMaxConnections: 100
+
+    neo4j:
+      replicas: 3
+      javaOptsMaxRam: 18g
+      maxConnections: 50
+      userAuth: neo4j/N3o4j@n@us@2020
+      dbmsMemoryPageCacheSize: 8100m
+      dbmsMemoryHeapMaxSize: 7950m
+
+    versionEtc:
+      user: root
+      passwd: toor
+
+    hmanager:
+      image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/heimdall/hmanager
+      imagePullPolicy: IfNotPresent
+      replicas: 1
+
+      maxUnavailable: 0
+      maxSurge: 1
+
+      enableRdsSsl: false
+      enableRdsCertificateValidation: false
+      lastOperationTimeDifferenceSecs: 130
+      javaOpts: "-XX:MaxRAM=8g@space@-XX:MaxRAMFraction=2"
+
+      resources:
+        limits:
+          cpu: "2"
+          memory: 10Gi
+        requests:
+          cpu: "2"
+          memory: 10Gi
+
+    usagemetrics:
+      image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/heimdall/usagemetrics
+      imagePullPolicy: IfNotPresent
+      replicas: 1
+      metricsQueryStep: 900
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 20m
+          memory: 256Mi
+
+    heimdallbox:
+      image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/heimdall/heimdallbox
+      imagePullPolicy: IfNotPresent
+      refreshFindingsDelayInSecs: 20
+      refreshFindingsDelayVariationInSecs: 15
+      refreshFindingsCalls: 10000
+      lastOperationTimeDifferenceSecs: 130
+      enableRdsSsl: false
+      enableRdsCertificateValidation: false
+      javaOpts: "-J-Xms20g@space@-J-Xmx20g"
+      enableActorMetrics: true
+      produceHeimdallUsageMetrics: true
+      eventsAppendTenantId: false
+      replicas: 3
+      resources:
+        limits:
+          cpu: "14"
+          memory: 40Gi
+        requests:
+          cpu: "14"
+          memory: 40Gi
+
+    heimdallboxdata:
+      storageSize: 2000Gi
+      storageClass: standard-encrypted-zones
+
+    heimdallws:
+      image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/heimdall/heimdallws
+      imagePullPolicy: IfNotPresent
+      replicas: 1
+      enableRdsSsl: false
+      enableRdsCertificateValidation: false
+      terminationGracePeriodSeconds: 10
+      refreshFindingsDelayInSecs: 120
+      refreshFindingsDelayVariationInSecs: 15
+      refreshFindingsCalls: 10000
+      lastOperationTimeDifferenceSecs: 130
+      maxUnavailable: 0
+      maxSurge: 1
+
+      resources:
+        limits:
+          cpu: 6
+          memory: 32Gi
+        requests:
+          cpu: 6
+          memory: 32Gi
+
+      eventsAppendTenantId: false
+      timeWindowLength: 12h
+      jmxPort: 5420
+      javaOpts: "-J-Xms30g@space@-J-Xmx30g"
+      enableActorMetrics: true

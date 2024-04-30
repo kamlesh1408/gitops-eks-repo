@@ -1,0 +1,10 @@
+apiVersion: v2
+name: eds
+description: A Helm chart for deploying Factual Table
+type: application
+version: 1.0.0
+
+dependencies:
+- name: eds
+  version: 1.0.67
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

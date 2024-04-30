@@ -1,0 +1,47 @@
+cassandra-cluster:
+  env: "edrusw"
+
+  statefulSet:
+    clusterSize: 5
+
+    persistentVolume:
+      volumeSize: 1000Gi
+      storageClass: 'standard-encrypted-zones'
+
+    env:
+      s3BackupActive: "True"
+      s3BackupRetention: 90
+      s3StateBucket: '4304-experimental-bucket'
+      maxHeapSize: '8G'
+      heapNewsize: '600M'
+      awsDefaultRegion : us-west-2
+
+    resources:
+      limits:
+        cpu: "6"
+        memory: 16Gi
+      requests:
+        cpu: "6"
+        memory: 8Gi
+
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/cassandra-cluster/cassandra-cluster"
+      tag: ''
+      imagePullPolicy: IfNotPresent
+
+  serviceAccount:
+    iamRoleArn: arn:aws:iam::983703175993:role/edruswcassandra-s3-rw-role
+
+  kong:
+    cloudLinkPassword: 'Mc4fee2020'     
+    
+  enableNetworkpolicy: true
+
+  cassandra:
+    secret:
+      secretId: "cassandra-credentials"
+      secretVersion: "df8275a4-b753-4b0b-8a1d-da9bb9e3d8bb"
+      
+  healthcheck:
+    enabled: true
+    image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/etcd:curl    

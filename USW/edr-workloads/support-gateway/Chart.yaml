@@ -1,0 +1,10 @@
+apiVersion: v2
+name: support-gateway
+description: A Helm chart for installing support-gateway
+type: application
+version: 1.0.0
+
+dependencies:
+- name: support-gateway
+  version: 2.0.72
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

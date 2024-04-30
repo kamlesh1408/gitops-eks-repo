@@ -1,0 +1,10 @@
+apiVersion: v2
+name: api-gateway
+description: A Helm chart for installing api-gateway(previously api-management-dbless)
+type: application
+version: 1.0.0
+
+dependencies:
+- name: api-gateway
+  version: 3.1.302
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

@@ -1,0 +1,59 @@
+hscheduler:
+  environment: edrusw
+  enableNetworkPolicy: true
+  vpcDnsNamespace: 172.20.0.10
+
+  kong:
+    corsOriginUrl: '^https://ui.*\.soc.*\.trellix\.com'
+
+  postHook:
+    image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/etcd:curl    
+
+  sts:
+    replicas: 1
+
+  hscheduler:
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/hscheduler/hscheduler
+      pullPolicy: 'IfNotPresent'
+
+    resources:
+      limits:
+        cpu: "2"
+        memory: 10Gi
+      requests:
+        cpu: "2"
+        memory: 10Gi
+
+    resultSubscriptionTopicsRefreshMs: "300001"
+    hsClusterSize: 1
+    hsJavaOpts: -XX:MaxRAM=9g@space@-XX:MaxRAMFraction=2
+
+    hsEnableActorMetrics: "true"
+    hsActorMetricsPushGatewayUrl: http://pushgatewaylb.edrusw.svc.cluster.local:9091/metrics/job/hscheduler
+    hsActorMetricsEnablePushGatewayReporter: "true"
+
+    defaultTicketWeight: 10
+
+    arangoHosts: 127.0.0.1:8529
+    arangoUsername: copperfield
+    arangoPassword: Ar4ngous@2020
+
+  arangodb:
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/hscheduler/arangodb
+      pullPolicy: 'IfNotPresent'
+
+    resources:
+      limits:
+        cpu: "2"
+        memory: 8Gi
+      requests:
+        cpu: "2"
+        memory: 8Gi
+
+    overrideDetectedTotalMemory: 8G
+
+    dbVolumeSize: 100Gi
+    dbVolumeType: standard-encrypted
+    storageEngine: rocksdb

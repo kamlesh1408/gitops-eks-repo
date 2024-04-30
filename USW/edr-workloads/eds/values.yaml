@@ -1,0 +1,83 @@
+eds:
+  environment: edrusw
+
+  kong:
+    corsOriginUrl: '^https://ui.*\.soc.*\.trellix\.com'
+
+  healthcheck:
+    enabled: true
+    image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/etcd:curl
+
+  etcd:
+    # IMPORTANT
+    # NOTE: For all existing clusters(i.e from edrusw to production)
+    # this needs to be set as False.
+    createNewCluster: false
+    # For existing clusters this can be obtained by
+    # Command: etcdctl --no-sync get /solutions/{KERNEL_NAMESPACE}eds/services/eds/components/db/images/etcd/application/discoveryurl
+    # Output: http://etcd-0.etcd.kube-system.svc.cluster.local:2379/v2/keys/discovery/{{discoveryUuid}}
+    discoveryUuid: 5395b303-51eb-4839-a761-52078a891136
+    image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/etcd:curl
+
+  vpc:
+    dnsNamespace: 172.20.0.10
+
+  deployment:
+    enableCniNetworkRules: true
+
+    etcd:
+      version: 0.0.3879
+
+    kafka:
+      numPartitions: 1
+      replicationFactor: 1
+
+    edscoresvc:
+      image:
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/eds/edscorews
+
+      replicas: 2
+      coreServiceLocation: "http://corewslb.edrusweds.svc.cluster.local"
+      javaOptions: "-Xmx4G -Xms512m"
+
+      resources:
+        limits:
+          cpu: "2"
+          memory: 6Gi
+        requests:
+          cpu: "2"
+          memory: 6Gi
+
+    edsquerymgr:
+      image:
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/eds/edsqueryws
+
+      replicas: 2
+      coreServiceLocation: "http://corewslb.edrusweds.svc.cluster.local"
+      javaOptions: "-Xmx4G -Xms512m"
+
+      resources:
+        limits:
+          cpu: "2"
+          memory: 6Gi
+        requests:
+          cpu: "2"
+          memory: 6Gi
+
+  statefulset:
+    edsdb:
+      image:
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/eds/edsdb
+
+      resources:
+        limits:
+          cpu: "2"
+          memory: 6Gi
+        requests:
+          cpu: "2"
+          memory: 6Gi
+
+      clusterSize: 3
+
+      volumeSize: 30Gi
+      volumeType: standard-encrypted-zones

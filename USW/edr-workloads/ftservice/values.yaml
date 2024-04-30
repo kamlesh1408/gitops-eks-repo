@@ -1,0 +1,83 @@
+ftservice:
+  env: edrusw
+  vpcDnsNamespace: "172.20.0.10"
+  enableNetworkpolicy: true
+
+  indexer:
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/ftservice/indexer"
+
+    clusterSize: 4
+
+    resources:
+      limits:
+        cpu: "2"
+        memory: 2Gi
+      requests:
+        cpu: "2"
+        memory: 2Gi
+
+    pdbMaxUnavailable: 1
+
+
+  indexmanagerft:
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/ftservice/indexmanagerft"
+
+    clusterSize: 1
+
+    resources:
+      limits:
+        cpu: "2"
+        memory: 2Gi
+      requests:
+        cpu: "2"
+        memory: 2Gi
+
+    pdbMaxUnavailable: 1
+
+  publicapi:
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/ftservice/publicapi"
+
+    clusterSize: 2
+
+    resources:
+      limits:
+        cpu: "2"
+        memory: 4Gi
+      requests:
+        cpu: "2"
+        memory: 4Gi
+  
+    pdbMaxUnavailable: 1
+
+  initContainer:
+    repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/busybox
+
+  config:
+    awsVpcCidr: "10.1.0.0/16"
+    k8sMasterCidr: "10.1.0.0/16"
+
+    rds:
+      enableRdsSsl: "false" 
+      secret:
+        secretId: "ft-rds-datasources"
+        secretVersion: "3a212bfa-1cbb-4d0e-b15a-bf49c328c07e"
+      
+    governanceFile: "contentGovernanceResponseMock.json"
+    envFt: "LARGE"
+
+    indexerSize: 4
+    indexManagerSize: 1
+    rdsMigrationEnabled: False
+    retentionpolicySize: 100
+    retentionpolicyDelay: 1
+    retentionpolicyDays: 0
+    retentionpolicySchedule: "0 0 1 1/1 * ?"
+    metricsSchedule: "0 0/5 * 1/1 * ?"
+
+  kong:
+    cloudLinkPassword: Mc4fee2020
+    cloudLinkSourcePropertyName: tenant_id
+    corsOrigin: '^https://ui.*\.soc.*\.trellix\.com'

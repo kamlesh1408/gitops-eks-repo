@@ -1,0 +1,177 @@
+logging:
+  service:
+    namespace: edrusw
+    region: us-west-2
+    enableNetworkPolicy: true
+  initContainer:
+    repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/logging/busybox
+    tag: "1.27.2"
+  common:
+    repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/logging/curl
+    tag: "8.2.1"
+    s3Enabled: true
+    serviceAccount:
+      create: true
+      name: logging-s3-access
+      annotations: {}
+      labels: {}
+      automountServiceAccountToken: true
+    maxShardPerNode: "5000"
+  dashboard:
+    replicas: 3
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/logging/dashboard
+      tag: ''
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        memory: 4Gi
+        cpu: "2"
+
+  esearch:
+    clusterSize: 10  # No. of datanodes
+    masterReplica: 3 # No. of master nodes
+    retention: 15d   # ES cluster retention in days
+    initialMasterNode: logging8-database-esearch-master-0,logging8-database-esearch-master-1,logging8-database-esearch-master-2
+    heapSize: 12g  # ES cluster heap memory
+    siemEnabled: 'false'
+    dataVolumeSize: 1000Gi
+    masterVolumeSize: 30Gi
+    volumeType: standard-encrypted-zones-gp3
+    dnsZoneId: 169.254.169.254  #keep it as is. (value for healthcheck netpol)
+    ServerCleanupRetention: 1d
+    resources:
+      requests:
+        memory: 40Gi
+        cpu: "4"
+      limits:
+        memory: 40Gi
+        cpu: "4"
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/logging/esearch
+      tag: ''
+    esearchmetricsexporter:
+      image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/logging/elasticsearch_exporter
+
+
+  logstash:
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/logging/logstash
+      tag: ''
+    javaOpts: "-Xmx1300m -Xms1300m"   ## Setting up JVM max/min heap size
+    resources:
+      limits:
+        cpu: 500m
+        memory: 2Gi
+      requests:
+        cpu: 50m
+        memory: 500Mi
+
+  filebeat:
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/logging/filebeat
+      tag: ''
+    resources:
+      limits:
+        memory: 200Mi
+        cpu: 200m
+      requests:
+        cpu: 100m
+        memory: 100Mi
+
+  healthcheck:
+    esBackupEnabled: false
+    esFolderName: 'logging8-backup'
+    s3Endpoint: https://s3.us-west-2.amazonaws.com
+    identityNamespacePrefix: edrusw
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/logging/logginghealthcheck
+      tag: ''
+    resources:
+      limits:
+        cpu: 750m
+        memory: 500Mi
+      requests:
+        cpu: 200m
+        memory: 100Mi 
+
+  s3agent:
+    enable: false ## Required if ELB/ALB logs are required to be fetched in the logging cluster
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/logging/s3agent
+      tag: ''
+    resources:
+      limits:
+        cpu: 250m
+        memory: 1G
+      requests:
+        cpu: 100m
+        memory: 500Mi
+    bucket:
+      apiElb: " "
+      apiElbPrefix: 
+      uiElb: " "
+      uiPrefix:
+      apiAlb: " "
+      apiAlbPrefix: edrusw
+    endpoint: https://s3.us-west-2.amazonaws.com
+    
+  healthcheck1:
+    image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/etcd:curl
+    numOfRetries: 20
+    path: health
+
+  fluentbit:
+    enabled: true
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/logging/fluentbit
+    memBufLimit: 100MB
+    ignoreOlder: 300m
+    logHandler: "server"
+    allowedLogLevels:
+      - info
+      - error
+      - warn
+    resources:
+      limits:
+        cpu: 400m
+        memory: 500Mi
+      requests:
+        cpu: 200m
+        memory: 250Mi
+
+  fluent-operator:
+    operator:
+      image:
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/logging/fluent-operator
+      initcontainer:
+        image:
+          repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/logging/docker
+
+  irsa:
+    enabled: true
+    awsAccountId: "983703175993"
+    oidcId: "906F1EF1348E27C5B2F84CFE9F58C1E3"
+    awsEnvType: "commercial"
+    awsRegion: "us-west-2"
+    nameOverride: edrusw-logging
+    # Change/Add the bucket ARN as per the environment in the Policy Resource array (Optional)  
+    policy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action":[
+                "s3:*"
+            ],
+            "Resource": "arn:aws:s3:::edrusw"
+          }
+        ]
+      }
+    serviceAccount:
+      create: false
+      nameOverride: "" #"logging-s3-access"

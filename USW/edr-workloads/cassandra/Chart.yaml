@@ -1,0 +1,10 @@
+apiVersion: v2
+name: cassandra
+description: A Helm chart for deploying Cassandra
+type: application
+version: 1.0.0
+
+dependencies:
+- name: cassandra-cluster
+  version: 1.0.141
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

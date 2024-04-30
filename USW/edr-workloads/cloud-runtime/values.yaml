@@ -1,0 +1,118 @@
+cloud-runtime:
+  environment: edrusw
+  enableNetworkPolicy: true
+  target: 'k8s:certified'
+  logLevel: 30
+
+  vpcDnsNamespace: 172.20.0.10
+
+  kong:
+    cloudLinkPassword: mc4fee
+    corsOriginUrl: '^https://ui.*\.soc.*\.trellix\.com'
+
+  aws:
+    region: "us-west-2"
+    vpcCidr: "10.1.0.0/16"
+    k8SMasterCidr: "10.1.0.0/16"
+
+  frontend:
+    replicas: 2
+
+    flaskNProcess: 1
+    limitRequestLine: "4094"
+    limitRequestFields: "100"
+    limitRequestFieldSize: "8190"
+
+    resources:
+      requests:
+        memory: "500Mi"
+        cpu: 1600m
+      limits:
+        memory: 1300Mi
+        cpu: 1600m
+
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/cloud-runtime/frontend
+
+    maxUnavailable: 1
+
+  workers:
+    workersRefreshPeriod: 30
+    podCount: 1
+
+    resources:
+      requests:
+        memory: 500Mi
+        cpu: 1600m
+      limits:
+        memory: 5000Mi
+        cpu: 1600m
+
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/cloud-runtime/workers
+
+    maxUnavailable: 1
+
+  consumers:
+    replicas: 1
+
+    resources:
+      requests:
+        memory: 600Mi
+        cpu: 800m
+      limits:
+        memory: 1000Mi
+        cpu: 1
+
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/cloud-runtime/consumers
+
+    maxUnavailable: 1
+
+  memcached:
+    clusterSize: 3
+
+    resources:
+      requests:
+        memory: 500Mi
+        cpu: 3200m
+      limits:
+        memory: 1500Mi
+        cpu: 3200m
+
+    memory: "64"
+
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/cloud-runtime/resultbackend
+
+    maxUnavailable: 1
+
+  mqueue:
+    resources:
+      requests:
+        memory: 500Mi
+        cpu: 3200m
+      limits:
+        memory: 1300Mi
+        cpu: 3200m
+
+    clusterSize: 3
+
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/cloud-runtime/mqueue
+
+    maxUnavailable: 1
+
+    logLevel: error # Valid Values: "debug", "info", "warning", "error", "critical", "none"
+    memoryLimit: "1300Mi"
+
+  rds:
+    secret:
+      secretId: "runtime-rds-datasources"
+      secretVersion: "e7fc45fd-ec3f-4ed3-b39c-f43dec46a58a"
+
+  reader:
+    nproc: "1"
+    databusConsumerRefreshPeriod: "1"
+    databusPollTimeout: "300"
+    databusConsumerGroup: runtime_tasks_group

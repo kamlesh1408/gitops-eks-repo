@@ -1,0 +1,10 @@
+apiVersion: v2
+name: arangodb
+description: A Helm chart for installing arangodb
+type: application
+version: 1.0.0
+
+dependencies:
+  - name: arangodb
+    version: 1.0.71
+    repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

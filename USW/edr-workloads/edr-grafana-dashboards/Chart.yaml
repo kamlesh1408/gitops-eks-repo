@@ -1,0 +1,11 @@
+apiVersion: v2
+name: edr-grafana-dashboards
+description: A Helm chart for installing edr-grafana-dashboards
+type: application
+version: 0.0.1
+
+
+dependencies:
+- name: edr-grafana-dashboards
+  version: 1.0.42
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

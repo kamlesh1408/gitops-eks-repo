@@ -1,0 +1,10 @@
+apiVersion: v2
+name: heimdallrt
+description: A Helm chart for installing heimdall runtime
+type: application
+version: 1.0.0
+
+dependencies:
+- name: heimdallrt
+  version: 1.0.40
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: datapipeline
+description: A Helm chart for deploying Datapipeline
+type: application
+version: 1.0.0
+
+dependencies:
+- name: datapipeline
+  version: 1.0.153
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

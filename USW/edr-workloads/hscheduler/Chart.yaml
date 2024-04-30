@@ -1,0 +1,10 @@
+apiVersion: v2
+name: hscheduler
+description: A Helm chart for installing heimdall scheduler service
+type: application
+version: 1.0.0
+
+dependencies:
+- name: hscheduler
+  version: 1.0.24
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

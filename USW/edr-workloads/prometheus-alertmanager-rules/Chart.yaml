@@ -1,0 +1,10 @@
+apiVersion: v2
+name: prometheus-alertmanager-rules
+description: A Helm chart for installing prometheus-alertmanager-rules
+type: application
+version: 1.0.0
+
+dependencies:
+  - name: prometheus-alertmanager-rules
+    version: 1.0.87
+    repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

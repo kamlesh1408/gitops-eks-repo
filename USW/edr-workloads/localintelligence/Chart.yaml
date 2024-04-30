@@ -1,0 +1,10 @@
+apiVersion: v2
+name: localintelligence
+description: A Helm chart for deploying Local Intelligence
+type: application
+version: 1.0.0
+
+dependencies:
+- name: localintelligence
+  version: 1.0.48
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

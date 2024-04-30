@@ -1,0 +1,54 @@
+cgovernance:
+  environment: edrusw
+  name: cgovernance
+  enableCniNetworkRules: true
+
+  vpc:
+    dnsNamespace: 172.20.0.10
+
+  kong:
+    corsOriginUrl: ^https://ui.*\.soc.*\.trellix.com
+    cloudLinkPassword: Mc4fee2020
+
+  serviceAccount:
+    create: true
+
+  # Secret should be set in the secrets-manager as : CASSANDRA_PASS: <password>
+  secret:
+    secretId: "cassandra-credentials"
+    secretVersion: "df8275a4-b753-4b0b-8a1d-da9bb9e3d8bb"
+
+  deployment:
+    env: EKS-DEV
+    replicas: 1
+
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/cgovernance/cgovernance"
+
+    resources:
+      limits:
+        cpu: "2"
+        memory: 1G
+      requests:
+        cpu: 200m
+        memory: 500M
+    logrotate:
+      image:
+        repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/cgovernance/logrotate"
+        
+      resources:
+        limits:
+          cpu: 10m
+          memory: 20Mi
+        requests:
+          cpu: 10m
+          memory: 20Mi
+
+    cassandraReplicas: 5
+    uwsgiCheaperMin: 1
+    uwsgiCheaperInitial: 1
+    uwsgiWorkers: 10
+    uwsgiCheaperStep: 2
+    uwsgiBufferSize: 10768
+    cheaperRssLimitSoft: 786432000
+    awsRegion: us-west-2

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: identity
+description: A Helm chart for deploying identity
+type: application
+version: 1.0.0
+
+dependencies:
+- name: identity
+  version: 1.0.68
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

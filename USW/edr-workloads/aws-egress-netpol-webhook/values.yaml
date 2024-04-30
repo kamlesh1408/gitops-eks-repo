@@ -1,0 +1,11 @@
+aws-egress-netpol-webhook:
+  webhook:
+    name: aws-egress-netpol
+
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/aws-egress-netpol-webhook/aws-egress-netpol-webhook
+    
+    service:
+      port: 5000
+    
+    awsRegion: us-west-2

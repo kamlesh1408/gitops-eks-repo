@@ -1,0 +1,274 @@
+datapipeline:
+  env: edrusw 
+  springProfileActive: PRD
+  vpcDnsNamespace: "172.20.0.10"
+  propertyRemover: |-
+    descriptorId: "traces-properties-to-delete"
+    rules:
+      - eventType:
+          - WMI Activity
+        properties:
+          - wmi.cid
+          - wmi.consumer
+          - wmi.ess
+          - wmi.fqdn
+          - wmi.local
+          - wmi.ns
+          - wmi.user
+      - eventType:
+          - SysInfo
+        properties:
+          - traceExtendedVisibility
+      - eventType:
+          - Code Injected
+        properties:
+          - injectorProcessTraceId
+      - eventType:
+          - Network Accessed
+        properties:
+          - network.type
+      - eventType:
+          - Context Changed
+        properties:
+          - objectType
+      - eventType:
+          - User Login
+          - User Logout
+        properties:
+          - logonProcessName
+      - eventType:
+          - ScheduledTask Changed
+        properties:
+          - schedtask.description
+          - schedtask.users
+      - eventType:
+          - Epp Process Scan
+          - Epp File Scan
+        properties:
+          - scannerId
+          - eppAttributes.2097512
+          - eppAttributes.2097768
+          - eppAttributes.2098024
+          - eppAttributes.2098277
+          - eppAttributes.2098852
+          - eppAttributes.2099364
+          - eppAttributes.2099860
+          - eppAttributes.2101410
+          - eppAttributes.2101652
+          - eppAttributes.2101908
+          - eppAttributes.2102165
+          - eppAttributes.2102948
+          - eppAttributes.2103204
+          - eppAttributes.2103976
+          - eppAttributes.2104228
+          - eppAttributes.2104484
+          - eppAttributes.2104744
+          - eppAttributes.2109860
+          - eppAttributes.2110120
+          - eppAttributes.2110376
+          - eppAttributes.2110628
+          - eppAttributes.2111140
+          - eppAttributes.2115238
+          - eppAttributes.2115494
+          - eppAttributes.2115750
+          - eppAttributes.2116006
+          - eppAttributes.2116261
+          - eppAttributes.2116517
+          - eppAttributes.2116774
+          - eppAttributes.2117524
+          - eppAttributes.2118308
+          - eppAttributes.2119973
+          - eppAttributes.2120340
+          - eppAttributes.2120868
+          - eppAttributes.2121124
+          - eppAttributes.2121383
+          - eppAttributes.2122901
+          - eppAttributes.2126244
+          - eppAttributes.2127973
+          - eppAttributes.2135701
+          - eppAttributes.2135957
+          - eppAttributes.2136744
+          - eppAttributes.2137766
+          - eppAttributes.2140308
+          - eppAttributes.2148516
+          - eppAttributes.2148772
+          - eppAttributes.2149542
+          - eppAttributes.2150564
+          - eppAttributes.2150820
+          - eppAttributes.2622116
+          - eppAttributes.2623144
+          - eppAttributes.3146149
+          - eppAttributes.3146405
+          - eppAttributes.3146661
+          - eppAttributes.3146853
+          - eppAttributes.3147173
+          - eppAttributes.3147429
+          - eppAttributes.3147621
+          - eppAttributes.3148389
+          - eppAttributes.3148645
+          - eppAttributes.3148901
+          - eppAttributes.3149413
+          - eppAttributes.3149669
+          - eppAttributes.3149925
+          - eppAttributes.3150181
+          - eppAttributes.3150437
+          - eppAttributes.3150693
+          - eppAttributes.3150949
+          - eppAttributes.3151205
+          - eppAttributes.3151781
+          - eppAttributes.3152293
+          - eppAttributes.3152485
+          - eppAttributes.3152741
+          - eppAttributes.3152997
+          - eppAttributes.4193956
+          - eppAttributes.4194216
+          - eppAttributes.4200852
+          - eppAttributes.4226453
+          - eppAttributes.4226709
+          - eppAttributes.4226964
+          - eppAttributes.4227220
+          - eppAttributes.4227476
+          - eppAttributes.4227736
+          - eppAttributes.4277928
+          - eppAttributes.6291624
+          - eppAttributes.6291880
+          - eppAttributes.6292136
+      - eventType:
+          - Account Created
+          - Account Changed
+        properties:
+          - accountInfo.displayName
+          - accountInfo.expiration
+          - accountInfo.groupId
+          - accountInfo.homeDir
+          - accountInfo.homePath
+          - accountInfo.logonHours
+          - accountInfo.newUac
+          - accountInfo.oldUac
+          - accountInfo.parameters
+          - accountInfo.passLastSet
+          - accountInfo.profilePath
+          - accountInfo.samName
+          - accountInfo.scriptPath
+          - accountInfo.userAccountControl
+          - accountInfo.workstations
+      - eventType:
+          - Process Accessed
+          - Code Injection
+          - Context Changed
+        properties:
+          - relatedProcess.procFileAttrs.certificates.sha1
+          - relatedProcess.procFileAttrs.certificates.type
+          - relatedProcess.procFileAttrs.certificates.validNotAfter
+          - relatedProcess.procFileAttrs.certificates.validNotBefore
+          - relatedProcess.procFileAttrs.creationDate
+          - relatedProcess.procFileAttrs.embedFileVersion
+          - relatedProcess.procFileAttrs.embedProductName
+          - relatedProcess.procFileAttrs.embedProductVersion
+          - relatedProcess.procFileAttrs.embedVendorName
+          - relatedProcess.procFileAttrs.fsattrs
+          - relatedProcess.procFileAttrs.isReputationError
+          - relatedProcess.procFileAttrs.lastModificationDate
+          - relatedProcess.procFileAttrs.repBOError
+      - eventType:
+          - Process Created
+          - Process Refreshed
+          - Process Forked
+        properties:
+          - procFileAttrs.certificates.type
+          - procFileAttrs.certificates.validNotAfter
+          - procFileAttrs.certificates.validNotBefore
+          - procFileAttrs.fileType
+          - procFileAttrs.fsattrs
+          - procFileAttrs.isReputationError
+          - procFileAttrs.lastModificationDate
+          - procFileAttrs.newFilePath
+          - procFileAttrs.repBOError
+
+  pdb:
+    maxUnavailable: 1
+
+  dpFilterRule: "eJzNV1Fv2zYQfs+vuPmhc4pYddKmSbZ1mGvLawDHKhxvw4AAASPRMVtJ1EgqjrH1v+87So6lJA2KIQ/TgyNRvI933313p7x6uUMv6eXzXYBjRDobDsZhSMNoOj4dhdP56WDi14e6WBt1vXTUjXfpoH+wv0eTyXBjNl9Ksro0saRYJ/yTO6FymZA2lEgbG3WFh6U0UuUk8oREmlKi4zKTubNkZCqcTDyW0+TuwXU7Z3htlEg7uySMJL1i7Ks1ncWDhZR8inLWm9uyKFIljeXFVMUyt9rYgObKpXIDvoHDwRn8tLRSblmDeZQKsAHGPjfRmiB1tJacEUllb2VspKvMCqMLo6QTZu2fsX2hEsTNtipfaJMJp3ROevFkPE+5oCwf42TsKl5W2qTJSvlU1JnzaIzhvaw9pFSsbL0qhVszyo2y8AYnTDUVwjj2q0VaJtYe7EpSaWWyx2co/mskzJMy5vtMJ2rhV4vyKlV2ybdlkWoczovawtW9KuNG5DZTjhcoUdZBLaV/YPUoG6cax5BXDkITa58uXbqaru85eKWNB5O3hZEWGTUMmFMhTaYsRxRs1Iq4Kh7hf55I42ELRJe7vS1fe22i4IoGC0hM7mSagulSpB6O8ysNuKsKBKm4RkCcCKgNZpxvaQyeywJZXuuSM1THVbKaK88TmaobCZHc49vukVT+6Dq2dL3HCCqDMGIvnT14xbxzNVWcSut0Ucj0zu+VsjKgASJtx27LeNmK6V48lQqz0jrO94ZdX8IFi6VVh0gR867y6zuyn7dJvdrZKUT8WVxLunkdcF8p/GmmTKUN0EakQJjJOheZipNioVJwaHd2wJWGkmOdBQsB5ZnbLA0+AclCF4lw4goEBjmaTRBdfQIRU9x+o1XpVBqcnkfHb/v7I+Rs7Au6aezpDSCkEuSsvWWhkBx0yEDETt2AMnafg5D5NS9zcv3GYIbVZwUbxCyZZ4WcSVumzxIyo9kh2o9DCSFxcSogt1GV0LFPJ2+BEFGuiSX/8PfODhEXoroB/wRbp2JaqBxqfpCYzcrlaDAPL8fR7Gwwp3eUy9XDvd3dGplbWPzQje4uzqb6UglgOrPfJmFv9Od0cHY6vByfTubh7JLXOnf7oNL5upDYzBDBrBItLwWzcBIOzsO7rYksOMooZwfLNL17oQ3XboWwpSuYRdH8MpqNcGbbhQZiXTSaMTtVKNzpYllPQZ8SWi0V+gLP2rqYMLDROnz3DraxvHpFp2cfo9l8MJ3TDzSKaPhhMP01pHlEv03hxznejOiPD+D4dzydRlOKxlQ7R0wMWKdJNBiFo6AJO1+ikaIdcudGciRyjXYaL0V+vWldC52meoXy5xabKI7JNiH6t/39fp96P9MVhttn7nIazQoKwVL/lvr71O83DXBhDS95kLEuMcEz8QkttHbk/ub+/c0qf3xzC2UTRc+LrupRnnYSCdPbMmwibg3lLcYkR15buxUCbJpuLN7VLPgXX9p1cqU1pJdjYrHifxepSrrnGL6ARb3KprYdxtL2ia9HqijA14KVXW/b2ov5WZocIKW8W/9CGF2QWPcjG4W3saxE2Tq2YbzAIGxYN+P5JUK0RiXV620/omvpqrvutqnTjUhLiZk6AYM/bdd/ZvK9hkRaGWFPzQZaDcrrNGm61jgGLa/qH9u1rsLXy+akB8BbdpqprmsR34MoovNtW1l0N+cH8i8MaNvthPsng4PhKOy9PXp/2Hsz7Ie9wdvRce/kuB8eDo5Go+ODsLO72yZSLahbuRQshZ3qfIqO0u0UY/yZikzi2/rFi9rpANS1XgXCztFzu7uB0xO9kmaInoX29w5NJP7h4uLo4I2I0UPsxYWKVxcXmIz4EXYZyFuYtz3xaXV+DniJbqdSMJpFH39sbf7SepJQAX0z2jS6hC6HH76GWAvoYQLOuHxuJH2QInXLJ3Px/vXr8Kh/dNI7PDwY9t4cHyAN75GQ/cPD0fiwf3IyPhg+lQvPtLxB/+AR0GDac/vRaGaVhvx5LpNOI0WtJFbbtmlsobfePpXJLLZLJdPEJ43++Yf+E4pT+PfjszRV6v+/uX889Qk+fwtf9Y2hmIlfS8x3YUlmBT6NrW8MDV20Ca+2N1naqAV83O9v30LG1tlHSPhmAr4q9+eI2am2LrYRs5Ae6zyVBav1u+YIegJ093/CXj2TjKvH0Jd/ARDEZE0="  
+
+  deployment:
+    hpa:
+      enabled: true
+      maxReplicas: 60
+      minReplicas: 30
+      scaleDown:
+        policies:
+          - periodSeconds: 1200
+            type: Pods
+            value: 2
+      scaleUp:
+        policies:
+          - periodSeconds: 300
+            type: Pods
+            value: 4
+          - periodSeconds: 300
+            type: Percent
+            value: 20
+    replicaCount: 60
+
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/datapipeline/datapipeline"
+      tag: ""
+
+    initContainer:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/busybox
+      tag: latest
+
+    heapOps: -Xmx7g -Xms7g -XX:+UseParallelOldGC
+    
+    resources:
+      limits:
+        cpu: "4"
+        memory: 10G
+      requests:
+        cpu: "3"
+        memory: 10G
+
+    nodeSelector:
+      karpenter.sh/nodepool: dp-spot
+
+    tolerations: 
+      - key: datapipelineNode
+        effect: NoSchedule
+        operator: Equal
+        value: "true"
+
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - datapipeline
+            topologyKey: failure-domain.beta.kubernetes.io/zone
+          weight: 100
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - datapipeline
+            topologyKey: kubernetes.io/hostname
+          weight: 90      
+
+  enableNetworkpolicy: true
+
+  ingress:
+    enabled: true
+
+  kong:
+    cloudLinkPassword: 'Mc4fee2020'    
+
+  properties:
+    processing_platform: "windows"
+
+  etcd:
+    updateKeys: False

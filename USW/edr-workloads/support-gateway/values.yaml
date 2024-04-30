@@ -1,0 +1,45 @@
+support-gateway:
+  clusterName: edrusw
+    
+  ingress:
+    certificate:
+      arn: arn:aws:acm:us-west-2:983703175993:certificate/1481c76c-41e3-489c-a0c0-24b718ee716d
+    inboundcidrs: 185.221.69.47/32,103.245.47.20/32,58.32.203.132/31,64.79.120.57/32,128.224.252.2/32,134.134.137.64/27,134.134.139.64/27,134.191.220.64/27,134.191.221.64/27,134.191.232.64/27,147.11.0.0/16,161.69.0.0/16,192.198.146.160/27,192.198.147.160/27,192.198.151.32/27,192.55.46.32/27,192.55.54.32/27,192.55.55.32/27,192.55.79.32/27,198.175.68.32/27,52.12.231.36/32,44.226.227.248/32,44.237.159.98/32,44.225.148.113/32,38.109.231.20/32,44.226.117.228/32,44.232.15.161/32,44.235.150.230/32,44.235.149.61/32,35.155.216.57/32,54.212.239.176/32
+
+  supportGateway:
+    users:
+      user: Us3r2020
+      svcacct: Svc4cct2020
+      admin: Adm1n2020
+
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/support-gateway/nginxsgw
+    resources:
+      limits:
+        cpu: "1"
+        memory: 1G
+      requests:
+        cpu: 100m
+        memory: 128M
+
+  logrotate:
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/support-gateway/logrotate
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi
+
+  direvent:
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/support-gateway/direvent
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi

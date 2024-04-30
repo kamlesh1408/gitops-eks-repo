@@ -1,0 +1,2 @@
+edr-grafana-dashboards:
+  env: commercial           #set value to fedramp for FedRAMP environments and commercial for others. default is commercial

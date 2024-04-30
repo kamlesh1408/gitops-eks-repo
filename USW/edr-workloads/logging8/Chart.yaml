@@ -1,0 +1,10 @@
+apiVersion: v2
+name: logging8
+description: A Helm chart for installing logging version 8
+type: application
+version: 1.0.0
+
+dependencies:
+- name: logging
+  version: 4.0.213          # TODO: Please Change
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

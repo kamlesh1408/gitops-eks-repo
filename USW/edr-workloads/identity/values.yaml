@@ -1,0 +1,70 @@
+identity:
+  env: "edrusw"
+  envType: EKS-LARGE
+
+  iam:
+    endpoint: https://iam.mcafee-cloud.com/iam/v1.0
+    endpointTrellix: https://auth.trellix.com/auth/realms/IAM
+
+    secret:
+      secretId: "iam-credentials"
+      secretVersion: "5e3aa476-e137-4f8e-92b2-1ba3a51d8af1"
+
+  apiURL: 'https://api.soc.us-west-2.trellix.com'
+
+  bps:
+    url: https://validatetoken.manage.mcafee.com/introspect/v1
+    secret:
+      secretId: "bps-credentials"
+      secretVersion: "2d4af1de-6905-4b84-9c04-6966799b52b3"
+
+  vpcDnsNamespace: 172.20.0.10
+  secretKeyFile: secret_key_tiny.crt
+
+  deployment:
+    replicas: 10
+
+    resources:
+      limits:
+        cpu: "6"
+        memory: 3Gi
+      requests:
+        cpu: "4"
+        memory: 2Gi
+
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/identity/identity"
+
+    uwsgiCheaperMin: 20
+    uwsgiCheaperInitial: 20
+    uwsgiWorkers: 200
+    uwsgiCheaperStep: 5
+    uwsgiBufferSize: 10768
+    apiCheaperRssLimitSoft: 1879048192
+
+  kong:
+    corsOrigin: ^https://ui.*\.soc.*\.trellix.com
+    cloudLinkPassword: Mc4fee2020
+
+  cassandra:
+    replicas: 5
+    secret:
+      secretId: "cassandra-credentials"
+      secretVersion: "df8275a4-b753-4b0b-8a1d-da9bb9e3d8bb"
+
+  enableNetworkpolicy: true
+
+  logrotate:
+    image:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/identity/logrotate
+
+    resources:
+      limits:
+        cpu: 200m
+        memory: 200Mi
+      requests:
+        cpu: 200m
+        memory: 200Mi
+
+  kubemaster:
+    cidr: 172.20.0.1

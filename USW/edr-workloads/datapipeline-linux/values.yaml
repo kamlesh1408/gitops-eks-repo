@@ -1,0 +1,75 @@
+datapipeline:
+  env: edrusw 
+  springProfileActive: PRD
+  vpcDnsNamespace: "172.20.0.10"
+
+  pdb:
+    maxUnavailable: 1
+
+  dpFilterRule: "eJytVk1v4kgQvfMrSrlsMiIOmb2tNqNFQHaQCF4RZld7ihq7gM603VZ3OwSN5r/vq7YBk1nNKT4k7nLVq6pXH83Nhx59oA/v9wBOEOlhNLyfTGiUzu+n48l8OR3Oonxkq73Tm22gy+yKPg4+3vZpNhsdzJZbJm9rlzFlNpc/ZVC65Jyso5x95vQKhy071iWpMidlDOU2qwsugyfHRgXOI1awFN7AXV484LPTylxckXJMdifYqz09ZMM1s3jRwUdzX1eV0ey8CI3OuPTW+YSWOhg+gB/g4LhAnJ52OmxbsIjSAHbAJOYuWhekzdZTcCpv7D1njkNjVjlbOc1BuX08Q32tc+QttrpcW1eooG1Jdv3TfH4WgvbiJnAWGl521pl8p2Mp2spFNMGIUbYRklE730pZhb2gvGiPaOBhbqlSLkhcZ6QVah/BVky157wvPrT8dwzzvM7kvbC5XkdpVa+M9lt5rStj4VyE1iPUflNxp0pf6CACyrUP6JY6HqR7tM+MhRuKnYPU1D6Wy9ahpesXSV5bF8H4tXLsUVEngCVV7ArtJaPk0K3Iq+ER8Zc5uwhbIbsy9E989c+JQigWLKAwZWBjwHStTIST+rIDd82AoBQbJCSFQLfBTOrNzuFcV6jy3tZSoTavWrq5iTxno18YTfKGb98n1tF1m5vZ9wVBF2iMLLZOH1EJ7zJNDafsg60qNse4d9pzQkNkep67r7PtWU5v8mm6sKh9kHof2I0jXEmznM0hSiS863JzJPt9l9RNr1ep7KvaML38msheqaI3Vxv2CdYIK6SZ70tV6Cyv1tqAQ9/rgSuLTs5skawVOs+9FiZ5BpJHX+QqqBUITEosmyRdPYOIOV67VpGhBL1QI799NKk0+MWSS1QW9AuylggkDi43Ipb6RMVkAem7gg0zqfq7Qi7Y1ya8B6Sg+RE2SMAUgPvMKHTMuKnJfayIqKCXMHG5p3j41usRnrgrsh+VL6+gQe2jc7qji8WX2eR6/O98+DAdPd1PZ8vJ4klkF0c9tMNyXzGUBSJZNN0homQxmU2Gj5Ojas6VxJKWUC5rY44frJMhaRBOSSWLNF0+pYsxfJ6H0EFsu9MK5kWTiqyUjNvrJhJHu63GAMql1nYtbkbMaFyTySmXmxuaPvyVLpbD+ZJ+o3FKo8/D+Z8TWqb0ZY44HvFlTP98Hi7pb5ym6ZzSe2qDIyGGpo80S4fjyTjpwi632FjYO7IiqWRGRbC3sq0qN4cdsbbG2B3mTHZZriUn34UYvA5uBwO6/kQr3CJfZZ1YbIXAIhq80uCWBoOuAR7I8FFuDOkeXJWFesauagN5qzx4q6zL/1c+QzlkcY28dtQsg0g7qVzoPTPsIp4M+RX3kWTeWocdEuyaHizuWhbih+9NN/+R4qvT8psAz2nKaMOhebs8bRt6UaZmLPsZPP5+kn+SYCPnyjRG0HnEHYmgMEBox2nenY6OGwzyXUz9JLvUuFYPnn4AvjqidKmBWpu++GyvAOmB+IOu15m3ULsSXlsOvvf+A+Ymc18="  
+
+  deployment:
+    replicaCount: 2
+
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/datapipeline/datapipeline"
+      tag: ""
+
+    initContainer:
+      repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/busybox
+      tag: latest
+
+    heapOps: -Xmx7g -Xms7g -XX:+UseParallelOldGC
+
+    resources:
+      limits:
+        cpu: "4"
+        memory: 10G
+      requests:
+        cpu: "3"
+        memory: 10G
+
+    nodeSelector:
+      karpenter.sh/nodepool: dp-spot
+
+    tolerations:
+      - key: datapipelineNode
+        effect: NoSchedule
+        operator: Equal
+        value: "true"
+
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - datapipeline
+            topologyKey: failure-domain.beta.kubernetes.io/zone
+          weight: 100
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - datapipeline
+            topologyKey: kubernetes.io/hostname
+          weight: 90            
+
+  enableNetworkpolicy: true
+
+  ingress:
+    enabled: true
+
+  kong:
+    cloudLinkPassword: 'Mc4fee2020'    
+
+  properties:
+    processing_platform: "linux"
+
+  etcd:
+    updateKeys: False

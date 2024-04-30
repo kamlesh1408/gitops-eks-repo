@@ -1,0 +1,223 @@
+databus:
+  common:
+    env: "edrusw"
+    initContainers:
+      kafkaTopicCreator:
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/databus/hypertrace
+      busybox:
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/busybox
+        tag: latest
+
+  infra:
+    awsAccountId: "983703175993"
+    oidcId: "906F1EF1348E27C5B2F84CFE9F58C1E3"
+    awsEnvType: "commercial"
+    awsRegion: "us-west-2"
+
+  cloudlink:
+    password: "Mc4fee2020"
+    corsUrl: '^https://ui.*\.soc.*\.trellix\.com'
+
+  kafka:
+    clusterSize: 30
+
+    prometheus:
+      enabled: true
+
+    replicationFactor: 2
+    replicationFactorOffsetTopic: 3
+    replicationFactorTransactionTopic: 3
+    isrTransactionTopic: 2
+    retentionHours: 24
+    retentionBytes: 53687091200
+    javaOpts: "-Xms6g -Xmx6g -XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=50 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
+
+    resources:
+      requests:
+        cpu: "8"
+        memory: 10Gi
+      limits:
+        cpu: "8"
+        memory: 10Gi
+
+    readinessProbe:
+      initialDelaySeconds: 120
+
+    volumeSize: 3000Gi
+    volumeType: standard-encrypted-zones
+
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/databus/kafka"
+
+  cloudproxy:
+    hpa:
+      enabled: true
+      minReplicas: 12
+      maxReplicas: 12
+      cpuPercentage: 50
+
+    prometheus:
+      enabled: true
+
+    resources:
+      requests:
+        cpu: "2"
+        memory: 15G
+      limits:
+        cpu: "2"
+        memory: 15G
+
+    javaOpts: "-Xmx12g -Xms12g -XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
+    corePoolSize: 1000
+    maximumPoolSize: 1300
+    keepAliveTimeMs: 50
+    queueCapacity: 100000
+    waitForRetryMs: 500
+    warnFullThreadpool: 100
+    tenantizedProduction: "false"
+    volumeSize: 100Gi
+    volumeType: standard-encrypted-zones
+
+    logs:
+      rootLogger: INFO, stdout, connectAppender
+      maxFileSize: 50MB
+      maxBackupIndex: 4
+      logLevel: ERROR # WARN, ERROR, INFO, DEBUG
+
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/databus/cloudproxy"
+
+  consumerservice:
+    lowercaseOutputName: true
+    lowercaseOutputLabelNames: true
+    url: "internal-dc36e2c1-edruswdatabus-con-0afb-615265508.us-west-2.elb.amazonaws.com"
+    vpcPodsCidr: "10.10.0.0/16"
+    vpcNodesCidr: "10.1.0.0/16"
+    privateSubnetIds: subnet-07496bf0cdc1a68e6,subnet-0c8fca6814a050003,subnet-01acb95da66073005
+    asgMinSize: 3
+    corePoolSize: "500"
+    maximumPoolSize: "1000"
+    consumerInstancesMax: "1000"
+    javaOpts: "-Xmx12g -Xms12g -XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
+    deployIngress: "false"
+    installIngressController: "false"
+    deployApiNotenant: "false"
+    tenantizedConsumergroupnameEnable: true
+    logLevel: ERROR
+    ingressType: "alb"
+
+    prometheus:
+      enabled: true
+
+    resources:
+      limits:
+        cpu: "2"
+        memory: 15Gi
+      requests:
+        cpu: "2"
+        memory: 15Gi
+
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/databus/consumerservice"
+
+  management:
+    replicas: 1
+
+    javaOpts: "-Xms512m -Xmx512m"
+
+    resources:
+      limits:
+        cpu: "1"
+        memory: 1Gi
+      requests:
+        cpu: "1"
+        memory: 1Gi
+
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/databus/management"
+
+    prometheus:
+      enabled: true
+
+  funcmonitor:
+    topic:
+      replicationFactor: 1
+      partitions: 3
+
+    replicas: 1
+
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/databus/funcmonitor"
+
+    resources:
+      limits:
+        cpu: "1"
+        memory: 1Gi
+      requests:
+        cpu: "1"
+        memory: 1Gi
+
+    prometheus:
+      enabled: true
+
+  qos:
+    hpa:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 1
+      threshold: 350
+
+    resources:
+      limits:
+        cpu: 2
+        memory: 15Gi
+      requests:
+        cpu: 2
+        memory: 15Gi
+
+    javaOpts: "-Xms6g -Xmx6g -XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=50 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"    
+
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/databus/qos"
+
+    prometheus:
+      enabled: true
+
+    cmReload:
+      image:
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/databus/configmap-reload
+
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1G
+        requests:
+          cpu: 500m
+          memory: 1G
+
+  zookeeper:
+    prometheus:
+      enabled: true
+
+    clusterSize: 3
+    javaOpts: "-Xms2g -Xmx2g"
+
+    resources:
+      requests:
+        cpu: "12"
+        memory: 16Gi
+      limits:
+        cpu: "12"
+        memory: 16Gi
+
+    volumeSize: 30Gi
+    volumeType: standard-encrypted-zones
+
+    logs:
+      rootLogger: ERROR, stdout, connectAppender
+      maxFileSize: 50MB
+      maxBackupIndex: 4
+      logLevel: ERROR # WARN, ERROR, INFO, DEBUG
+
+    image:
+      repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/databus/zookeeper"

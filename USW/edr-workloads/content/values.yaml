@@ -1,0 +1,10 @@
+content:
+  environment: "edrusw"
+  OnpremActiveContentTags: "@ds.adhocanalytics,@ds.analytics,@ds.clueevidence,@ds.email,@ds.endpointsnapshot,@ds.mar,@ds.phishtank,@ds.epo,@ds.urlscan,@ds.wg,@ds.siem,@ds.gti,@ds.edr,@ds.xdranalytics,@ds.xdrendpointsnapshot"
+  MvisionOnpremActiveContentTags: "@ds.adhocanalytics,@ds.analytics,@ds.clueevidence,@ds.email,@ds.endpointsnapshot,@ds.mar,@ds.phishtank,@ds.epo,@ds.urlscan,@ds.wg,@ds.siem,@ds.gti,@ds.edr,@ds.xdranalytics,@ds.xdrendpointsnapshot"
+  PerformanceOnpremActiveContentTags: "@ds.adhocanalytics,@ds.analytics,@ds.clueevidence,@ds.email,@ds.endpointsnapshot,@ds.mar,@ds.phishtank,@ds.epo,@ds.urlscan,@ds.wg,@ds.siem,@ds.edr,@ds.xdranalytics,@ds.xdrendpointsnapshot"
+
+
+  image:
+    repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/content/content
+    pullPolicy: IfNotPresent

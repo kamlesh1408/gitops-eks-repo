@@ -1,0 +1,91 @@
+case-management:
+  env: "edrusw"
+  vpc:
+    dnsNamespace: 172.20.0.10
+    cidr: 10.1.0.0/16
+    podsCidr: 10.100.0.0/16
+    nodesCidr: 10.1.0.0/16
+
+  kong:
+    useIdentityAuth: true
+    cors: ^https://ui.*.soc.*.trellix.com
+    rateLimit: 50
+    cloudLinkPassword: Mc4fee2020
+
+  postHook:
+    image: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/common/etcd:curl  
+
+  mysql:
+    secret:
+      secretId: "casemgmt-database-secret"
+      secretVersion: "0f9671fe-a13b-4b9c-b868-e07cb985301e"
+
+
+    enableRdsSsl: false
+    enableRdsCertificateValidation: false
+
+  casemanagement:
+    deployment:
+      replicas: 3
+
+      image: 
+        repo: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/case-management/casemgmt
+        pullPolicy: IfNotPresent
+
+      resources:
+        limits:
+          cpu: 1
+          memory: 3Gi
+        requests:
+          cpu: 1
+          memory: 3Gi
+
+
+      configs:
+        header: X-Tenant-Id
+        apiURL: 'https://api.soc.trellix.com'
+        defaultPageSize: 1000
+        minMemoryFlag: "-J-Xms1536m"
+        maxMemoryFlag: "-J-Xmx1536m"
+        maxNewCasePerHour: 4
+        rateNewCasePerHour: 1h
+        maxNewCasePerDay: 20
+        rateNewCasePerDay: 1d
+        maxNewEvidenceByCasePerHour: 8
+        rateNewEvidenceByCasePerHour: 1d
+        maxNewEvidencePerHour: 4
+        rateNewEvidencePerHour: 1d
+        eventsTopic: case-mgmt-events
+        eventsAppendTenantId: true
+        broadcastEnabled: true
+        distributedCacheEnabled: false
+        defaultShardId: "1"
+
+      externalRefs:
+        prometheusMetricPort: 9999
+        jmxPort: 5430
+        actionMetrics:
+          enable: true
+          port: 9095
+          doomsdayWildcard: "off"
+          trackIncludes: "case-mgmt-microservice/system/**"
+          trackExcludes: ""
+          dispatchers: "akka.actor.default-dispatcher"
+          routers: "case-mgmt-microservice/system/IO-TCP/selectors"
+          prometheusHttpServer: "no"
+          enablePrometheusReporter: false
+          enablePushGatewayReporter: true
+
+  usagemetrics:
+    deployment:
+      replicas: 1
+
+      image: 
+        repo: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/case-management/usagemetrics
+        pullPolicy: IfNotPresent
+
+      configs:
+        refreshIntervalSec: 360
+
+  networkPolicy:
+    enable: true

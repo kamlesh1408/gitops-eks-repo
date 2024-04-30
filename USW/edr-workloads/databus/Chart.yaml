@@ -1,0 +1,10 @@
+apiVersion: v2
+name: databus
+description: A Helm chart for deploying databus
+type: application
+version: 1.0.0
+
+dependencies:
+  - name: databus
+    version: 1.0.142
+    repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

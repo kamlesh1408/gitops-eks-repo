@@ -1,0 +1,10 @@
+apiVersion: v2
+name: content
+description: A Helm chart for deploying Infoseekers content
+type: application
+version: 1.0.0
+
+dependencies:
+- name: content
+  version: '142'
+  repository: https://raw.githubusercontent.com/trellix-edr/helm-charts/master/

@@ -1,0 +1,65 @@
+business-events:
+  env: edrusw
+  enableNetworkPolicy: true
+  vpcDnsNamespace: 172.20.0.10
+
+  businessevents:
+    deployment:
+      replicas: 1
+
+      resources:
+        requests:
+          memory: 600Mi
+          cpu: 500m
+        limits:
+          memory: 600Mi
+          cpu: 500m
+
+      image:
+        repository: "983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/business-events/compute"
+
+      apiNprocess: 1
+      apiLimitRequestLine: 4094
+      apiLimitRequestFields: 100
+      apiLimitRequestFieldSize: 8190
+      applicationProcess: 1
+
+  etcd:
+    url: etcd.kube-system.svc.cluster.local
+
+    replicaCount: 1
+
+    persistence:
+      storageClass: high-io-encrypted
+      size: 8Gi
+    enabled: true
+
+    image:
+      registry: 983703175993.dkr.ecr.us-west-2.amazonaws.com
+      repository: trellix/releases/business-events/etcd
+
+    volumePermissions:
+      enabled: false
+
+    auth:
+      token:
+        enabled: false
+        type: simple
+
+      rbac:
+        create: false
+        allowNoneAuthentication: true
+    pdb:
+      create: false
+
+  aws:
+    vpcCidr: 10.1.0.0/16
+
+  kubeMaster:
+    port: 443
+
+  kong:
+    enabled: true
+    corsOriginUrl: '^https://ui.*\.soc.*\.trellix\.com'
+    identity:
+      cloudlinkPassword: mc4fee
