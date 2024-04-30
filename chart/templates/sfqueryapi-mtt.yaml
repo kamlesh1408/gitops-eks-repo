@@ -1,0 +1,28 @@
+{{- if and (.Values.sfqueryapiMtt) (.Values.sfqueryapiMtt.enable) -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.sfqueryapiMtt.applicationName }}
+  namespace: {{ .Values.argoNamespace | default "argocd" }}
+spec:
+  project: {{ .Values.argoProject | default "default" }}
+  source:
+    repoURL: {{ required "repoUrl value is required" .Values.repoUrl }}
+    path: {{ .Values.clusterName}}/edr-workloads/{{ .Values.sfqueryapiMtt.applicationName }}
+    targetRevision: {{ .Values.targetRevision }}
+    helm:
+      values: |
+        {{- toYaml .Values | nindent 8 }}
+  destination:
+    server: {{ .Values.destinationServer | default "https://kubernetes.default.svc" }}
+    namespace: {{ .Values.clusterName }}-{{ .Values.sfqueryapiMtt.namespace }}
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace={{ .Values.sfqueryapiMtt.createNamespace }}
+    retry:
+      limit: 1
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 1m
+  {{- end -}}

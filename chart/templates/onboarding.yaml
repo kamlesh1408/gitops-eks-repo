@@ -1,0 +1,34 @@
+{{- if and (.Values.onboarding) (.Values.onboarding.enable) -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.onboarding.applicationName }}
+  namespace: {{ .Values.argoNamespace | default "argocd" }}
+spec:
+  spec:
+  ignoreDifferences:
+  - group: networking.k8s.io
+    kind: NetworkPolicy
+    jsonPointers:
+    - /spec/egress
+  project: {{ .Values.argoProject | default "default" }}
+  source:
+    repoURL: {{ required "repoUrl value is required" .Values.repoUrl }}
+    path: {{ .Values.clusterName }}/edr-workloads/{{ .Values.onboarding.applicationName }}
+    targetRevision: {{ .Values.targetRevision }}
+    helm:
+      values: |
+        {{- toYaml .Values | nindent 8 }}
+  destination:
+    server: {{ .Values.destinationServer | default "https://kubernetes.default.svc" }}
+    namespace: {{ .Values.clusterName }}{{ .Values.onboarding.namespace }}
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace={{ .Values.onboarding.createNamespace }}
+    retry:
+      limit: 1
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 1m
+  {{- end -}}

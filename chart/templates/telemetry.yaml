@@ -1,0 +1,35 @@
+{{- if and (.Values.telemetry) (.Values.telemetry.enable) -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.telemetry.applicationName }}
+  namespace: {{ .Values.argoNamespace | default "argocd" }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  ignoreDifferences:
+  - group: networking.k8s.io
+    kind: NetworkPolicy
+    jsonPointers:
+    - /spec/egress
+  project: {{ .Values.argoProject | default "default" }}
+  source:
+    repoURL: {{ required "repoUrl value is required" .Values.repoUrl }}
+    path: {{ .Values.clusterName }}/edr-workloads/{{ .Values.telemetry.applicationName }}
+    targetRevision: {{ .Values.targetRevision }}
+    helm:
+      values: |
+        {{- toYaml .Values.telemetry | nindent 8 }}
+  destination:
+    server: {{ .Values.destinationServer | default "https://kubernetes.default.svc" }}
+    namespace: {{ .Values.telemetry.namespace }}
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace={{ .Values.telemetry.createNamespace }}
+    retry:
+      limit: 1
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 1m
+  {{- end -}}

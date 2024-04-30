@@ -1,0 +1,340 @@
+# Global Values
+repoUrl: 'https://github.com/trellix-edr/ccs-gitops-eks.git'
+targetRevision: HEAD
+region: 'us-west-2'
+awsAccountId: '983703175993'
+awsEnvType: commercial
+clusterName: 'edrusw'
+clusterOIDCId: '906F1EF1348E27C5B2F84CFE9F58C1E3'
+destinationServer: 'https://kubernetes.default.svc'
+argoNamespace: ''
+argoProject: ''
+
+apiGateway: 
+  enable: true
+  createNamespace: false
+  namespace: edrusw
+  applicationName: api-gateway
+
+arangodb:
+  applicationName: arangodb
+  enable: true
+  createNamespace: true
+  namespace: arangodb
+
+businessEvents:
+  applicationName: business-events
+  enable: true
+  createNamespace: true
+  namespace: businessevents
+
+supportGateway: 
+  enable: true
+  createNamespace: false
+  namespace: support-gateway
+  applicationName: support-gateway
+
+staticContent: 
+  enable: true
+  createNamespace: false
+  namespace: edrusw
+  applicationName: static-content
+
+content:
+  enable: true
+  createNamespace: false
+  applicationName: content
+
+staticContentV2:
+  enable: true
+  createNamespace: true
+  namespace: static-content-v2
+  applicationName: static-content-v2
+
+onCloudConn:
+  applicationName: oncloudconn
+  enable: true
+  createNamespace: true
+  namespace: clcon
+
+awsEgressNetpolWebhook:
+  enable: true
+  createNamespace: false
+  namespace: default
+  applicationName: aws-egress-netpol-webhook
+
+snapshotParser:
+  applicationName: snapshot-parser
+  enable: true
+  createNamespace: true
+  namespace: snapshot-receiver
+
+cassandra:
+  applicationName: cassandra
+  enable: true
+  createNamespace: true
+  namespace: cassandra
+
+cloudRuntime:
+  enable: true
+  createNamespace: true
+  namespace: cloud-runtime
+  applicationName: cloud-runtime
+
+middleware:
+  applicationName: middleware
+  enable: true
+  createNamespace: true
+  namespace: mvm
+
+managedPersistenceService:
+  applicationName: managed-persistence-service
+  enable: true
+  createNamespace: true
+  namespace: persistence
+
+reputationService:
+  applicationName: reputation-service
+  enable: true
+  createNamespace: true
+  namespace: repservice
+
+databus:
+  enable: true
+  createNamespace: true
+  namespace: databus
+  applicationName: databus
+
+datapipeline:
+  applicationName: datapipeline
+  enable: true
+  createNamespace: true
+  namespace: pp
+
+datapipelinelinux:
+  applicationName: datapipeline-linux
+  enable: true
+  createNamespace: true
+  namespace: pp-linux
+
+logging:
+  enable: true
+  createNamespace: true
+  namespace: logging
+  applicationName: logging8
+
+notifications:
+  applicationName: notifications
+  enable: true
+  createNamespace: true
+  namespace: ntf
+
+cgovernance:
+  applicationName: content-governance-api
+  enable: true
+  createNamespace: true
+  namespace: cgovernance
+
+etaservice:
+  applicationName: tenant-assignment-service
+  enable: true
+  createNamespace: true
+  namespace: etaservice 
+
+casemanagement:
+  applicationName: case-management
+  enable: true
+  createNamespace: true
+  namespace: casemanagement
+
+hscheduler:
+  applicationName: hscheduler
+  enable: true
+  createNamespace: true
+  namespace: scheduler
+
+identity:
+  applicationName: identity
+  enable: true
+  createNamespace: true
+  namespace: identity
+
+telemetry:
+  enable: true
+  createNamespace: false
+  namespace: edrusw
+  applicationName: telemetry 
+
+ta:
+  applicationName: trace-analyzer
+  enable: true
+  createNamespace: true
+  namespace: ta-banf
+
+taLinux:
+  applicationName: trace-analyzer-linux
+  enable: true
+  createNamespace: true
+  namespace: ta-banf-linux
+
+taRds:
+  applicationName: ta-rds
+  enable: true
+  createNamespace: true
+  namespace: ta-rds
+
+taRds1:
+  applicationName: ta-rds-1
+  enable: true
+  createNamespace: true
+  namespace: ta-rds-1
+
+taRds2:
+  applicationName: ta-rds-2
+  enable: true
+  createNamespace: true
+  namespace: ta-rds-2
+
+taRds3:
+  applicationName: ta-rds-3
+  enable: true
+  createNamespace: true
+  namespace: ta-rds-3
+
+taRds4:
+  applicationName: ta-rds-4
+  enable: true
+  createNamespace: true
+  namespace: ta-rds-4
+
+taRds5:
+  applicationName: ta-rds-5
+  enable: true
+  createNamespace: true
+  namespace: ta-rds-5
+
+taRds6:
+  applicationName: ta-rds-6
+  enable: true
+  createNamespace: true
+  namespace: ta-rds-6
+
+taRds7:
+  applicationName: ta-rds-7
+  enable: true
+  createNamespace: true
+  namespace: ta-rds-7
+
+taRds8:
+  applicationName: ta-rds-8
+  enable: true
+  createNamespace: true
+  namespace: ta-rds-8
+
+taRds9:
+  applicationName: ta-rds-9
+  enable: true
+  createNamespace: true
+  namespace: ta-rds-9
+
+activityFeed:
+  enable: true
+  createNamespace: true
+  namespace: activity-feed
+  applicationName: trellix-edr-activity-feed
+
+onboarding:
+  applicationName: onboarding
+  enable: true
+  createNamespace: true
+  namespace: onboarding
+
+heimdallrt:
+  applicationName: heimdallrt
+  enable: true
+  createNamespace: true
+  namespace: heimdallrt
+
+heimdall:
+  enable: true
+  createNamespace: true
+  namespace: heimdall
+  applicationName: heimdall
+
+similarity:
+  applicationName: similarity
+  enable: true
+  createNamespace: true
+  namespace: similarity
+
+ftservice:
+  applicationName: ftservice
+  enable: true
+  createNamespace: true
+  namespace: ft
+
+localintelligence:
+  applicationName: localintelligence
+  enable: true
+  createNamespace: true
+  namespace: localint
+
+eds:
+  enable: true
+  createNamespace: true
+  namespace: eds
+  applicationName: eds
+
+marService:
+  enable: true
+  createNamespace: true
+  namespace: mar
+  applicationName: mar-service
+
+taRules:
+  enable: true
+  createNamespace: true
+  namespace: static-content-v2
+  applicationName: ta-rules
+
+edrGrafanaDashboards:
+  enable: true
+  createNamespace: false
+  namespace: edrusw
+  applicationName: edr-grafana-dashboards
+  
+sfmonitoring:
+  applicationName: sfmonitoring
+  enable: true
+  createNamespace: true
+  namespace: sf-monitoring
+
+sfqueryapiMtt:
+  applicationName: sfqueryapi-mtt
+  enable: true
+  createNamespace: true
+  namespace: sf-dataplatform-mtt
+
+searchService:
+  applicationName: search-service
+  enable: true
+  createNamespace: true
+  namespace: search-service
+
+streamexport:
+  applicationName: streamexport
+  enable: true
+  createNamespace: true
+  namespace: streamexport
+  
+sfmgmtapiMtt:
+  applicationName: sfmgmtapi-mtt
+  enable: true
+  createNamespace: true
+  namespace: sf-dataplatform-mtt
+
+prometheusAlertManagerRules:
+  enable: true
+  createNamespace: false
+  namespace: edrusw
+  applicationName: prometheus-alertmanager-rules

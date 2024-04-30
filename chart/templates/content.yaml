@@ -1,0 +1,30 @@
+{{- if and (.Values.content) (.Values.content.enable) -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.content.applicationName }}
+  namespace: {{ .Values.argoNamespace | default "argocd" }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.argoProject | default "default" }}
+  source:
+    repoURL: {{ required "repoUrl value is required" .Values.repoUrl }}
+    path: {{ .Values.clusterName }}/edr-workloads/{{ .Values.content.applicationName }}
+    targetRevision: {{ .Values.targetRevision }}
+    helm:
+      values: |
+        {{- toYaml .Values | nindent 8 }}
+  destination:
+    server: {{ .Values.destinationServer | default "https://kubernetes.default.svc" }}
+    namespace: {{ .Values.clusterName }}{{ .Values.content.namespace }}
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace={{ .Values.content.createNamespace }}
+    retry:
+      limit: 1
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 1m
+  {{- end -}}

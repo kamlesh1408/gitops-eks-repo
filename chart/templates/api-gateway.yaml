@@ -1,0 +1,47 @@
+{{- if and (.Values.apiGateway) (.Values.apiGateway.enable) -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.apiGateway.applicationName }}
+  namespace: {{ .Values.argoNamespace | default "argocd" }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.argoProject | default "default" }}
+  ignoreDifferences:
+  - group: ""
+    kind: Secret
+    name: kong-validation-webhook
+    namespace: {{ .Values.apiGateway.namespace }}
+    jsonPointers:
+    - /data
+  - group: ""
+    kind: Secret
+    name: kong-validation-webhook-ca
+    namespace: {{ .Values.apiGateway.namespace }}
+    jsonPointers:
+    - /data  
+  - group: "admissionregistration.k8s.io"
+    kind: ValidatingWebhookConfiguration
+    jsonPointers:
+    - /webhooks
+  source:
+    repoURL: {{ required "repoUrl value is required" .Values.repoUrl }}
+    path: {{ .Values.clusterName }}/edr-workloads/{{ .Values.apiGateway.applicationName }}
+    targetRevision: {{ .Values.targetRevision }}
+    helm:
+      values: |
+        {{- toYaml .Values | nindent 8 }}
+  destination:
+    server: {{ .Values.destinationServer | default "https://kubernetes.default.svc" }}
+    namespace: {{ .Values.apiGateway.namespace }}
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace={{ .Values.apiGateway.createNamespace }}
+    retry:
+      limit: 1
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 1m
+  {{- end -}}
