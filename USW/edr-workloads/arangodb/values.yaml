@@ -1,0 +1,94 @@
+arangodb:
+  environment: edrusw
+  enableCniNetworkRules: true
+
+  vpc:
+    dnsNamespace:  172.20.0.10
+
+  statefulSet:
+    secret:
+      secretId: "edr-arangodb-secret"
+      secretVersion: "be678222-2571-4fa8-a90a-60b25eeb1987"
+      
+    configs:
+      storageEngine: rocksdb 
+      clusterEnabled: "True"
+  
+    arangoagency:
+      clusterSize: 3
+      volumeSize: 10
+      volumeType: standard-encrypted-zones
+      volumeStorageDelete: true
+      image: 
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/arangodb/arangoagency
+        
+      resources:
+        limits:
+          cpu: 1600m
+          memory: 6Gi
+        requests:
+          cpu: 1600m
+          memory: 6Gi
+
+    arangobackup:
+      clusterSize: 1  
+      volumeSize: 3500
+      volumeType: standard-encrypted-zones
+      backupEnabled: 'True'
+      backupRetry: 10
+      backupRetentionDays : 10
+      backupCronScheduleExpression: "0 1 * * *"
+      createDatabase: true
+      backupStoreInS3: 'True'
+      s3StateBucket: "4304-experimental-bucket"
+      region: "us-west-2"
+      
+      image: 
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/arangodb/arangobackup
+        
+      resources:
+        limits:
+          cpu: 3200m
+          memory: 14Gi
+        requests:
+          cpu: 3200m
+          memory: 14Gi
+    
+    arangocoord:
+      image: 
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/arangodb/arangocoord
+        
+      resources:
+        limits:
+          cpu: "8"
+          memory: 20Gi
+        requests:
+          cpu: "8"
+          memory: 20Gi
+      clusterSize: 3
+      volumeSize: 50
+      volumeType: standard-encrypted-zones
+      cacheSize: 268435456
+      rocksdbTotalWriteBufferSize: 11596411699
+      rocksdbBlockCacheSize: 7730941132
+      rocksdbMaxWriteBufferNumber: 5
+
+    arangodb:
+      image: 
+        repository: 983703175993.dkr.ecr.us-west-2.amazonaws.com/trellix/releases/arangodb/arangodb
+
+      resources:
+        limits:
+          cpu: "12"
+          memory: 50Gi
+        requests:
+          cpu: "12"
+          memory: 50Gi
+      clusterSize: 3
+      volumeSize: 1000
+      volumeType: standard-encrypted-zones
+
+      cacheSize: 268435456
+      rocksdbTotalWriteBufferSize: 30923764531
+      rocksdbBlockCacheSize: 20615843020
+      rocksdbMaxWriteBufferNumber: 5
