@@ -1,0 +1,91 @@
+name: Update chart
+
+on:
+  workflow_dispatch:
+    inputs:
+      service:
+        type: choice
+        description: Service
+        required: true
+        options:
+        - api-gateway
+        - arangodb
+        - aws-egress-netpol-webhook
+        - business-events
+        - case-management
+        - cassandra
+        - cloud-runtime
+        - content
+        - content-governance-api
+        - databus
+        - datapipeline
+        - datapipeline-linux
+        - dwservice
+        - dwservice-linux
+        - edrai-api
+        - edrai-prompts
+        - edr-grafana-dashboards
+        - eds
+        - ftservice
+        - heimdall
+        - heimdallrt
+        - hscheduler
+        - identity
+        - localintelligence
+        - logging8
+        - managed-persistence-service
+        - mar-service
+        - middleware
+        - notifications
+        - onboarding
+        - oncloudconn
+        - reputation-service
+        - search-service
+        - sfmgmtapi
+        - sfmgmtapi-mtt
+        - sfmonitoring
+        - sfqueryapi
+        - sfqueryapi-mtt
+        - similarity
+        - snapshot-parser
+        - static-content
+        - static-content-v2
+        - streamexport
+        - support-gateway
+        - ta-rds
+        - ta-rds-1
+        - ta-rds-2
+        - ta-rds-3
+        - ta-rules
+        - telemetry
+        - tenant-assignment-service
+        - trace-analyzer
+        - trace-analyzer-linux
+        - trellix-edr-activity-feed
+      version:
+        type: string
+        description: Helm chart version
+        required: true
+      environment:
+        type: choice
+        description: Environment
+        required: true
+        options:
+        - edrpreprod
+        - edrusw
+        - edruse
+        - edreuc
+        - edrcac
+        - edraps
+        - edrind
+
+jobs:
+  diff:
+    uses: trellix-edr/smart-pipeline-cd/.github/workflows/template_update_chart.yaml@v1.4
+    with:
+      service: '${{inputs.service}}'
+      version: '${{inputs.version}}'
+      environment: '${{inputs.environment}}'
+      base_branch: master
+    secrets:
+      token: '${{secrets.SVC_GITHUB_TOKEN}}'

@@ -1,0 +1,23 @@
+---
+name: PR
+on:
+  pull_request:
+    types:
+      - edited
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - master
+
+jobs:
+  on-pr:
+    uses: trellix-edr/smart-pipeline-cd/.github/workflows/template_on_pr.yaml@v1.4
+    with:
+      smart_pipeline_cd_ref: v1.4
+    secrets:
+      remote_token: ${{secrets.SVC_GITHUB_COM_TOKEN}}
+      token: ${{secrets.SVC_GITHUB_TOKEN}}
+      argocd_username: ${{secrets.ARGOCD_USERNAME}}
+      argocd_password: ${{secrets.ARGOCD_PASSWORD}}
+      google_chat_wehbook_url: ${{secrets.GOOGLE_CHAT_WEBHOOK_URL}}
